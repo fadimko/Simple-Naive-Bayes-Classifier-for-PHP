@@ -47,10 +47,12 @@ class NaiveBayesClassifierStoreRedis extends NaiveBayesClassifierStore {
 	function __construct($conf = array()) {
 		if(empty($conf))
 			throw new NaiveBayesClassifierException(3001);
-		if(empty($conf['db_host']))
-			throw new NaiveBayesClassifierException(3101);
-		if(empty($conf['db_port']))
-			throw new NaiveBayesClassifierException(3102);
+		if(empty($conf['db_conn'])) {
+			if(empty($conf['db_host']))
+				throw new NaiveBayesClassifierException(3101);
+			if(empty($conf['db_port']))
+				throw new NaiveBayesClassifierException(3102);
+		}
 		if(!empty($conf['namespace']))
 			$this->namespace = $conf['namespace'];
 
