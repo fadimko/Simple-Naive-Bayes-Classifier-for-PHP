@@ -61,9 +61,14 @@ class NaiveBayesClassifierStoreRedis extends NaiveBayesClassifierStore {
 		$this->cache		= "{$this->namespace}-{$this->cache}";
 
 		// Redis connection
-        $this->conn = new Redis();
-        $this->conn->connect($conf['db_host'], $conf['db_port']);
-		$this->conn->select(77);
+		if(empty($conf['db_conn'])) {
+			// Redis connection	
+			$this->conn = new Redis();
+			$this->conn->connect($conf['db_host'], $conf['db_port']);
+			$this->conn->select(77);
+		} else {
+			$this->conn = $conf['db_conn'];
+		}
 	}
 
 	public function close() {
