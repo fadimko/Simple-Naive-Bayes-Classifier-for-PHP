@@ -1,6 +1,6 @@
 <?php
 
-namespace \Bango29\SimpleBayesClassifier\Classifier;
+namespace SimpleBayesClassifier\Classifier\Store;
 
 /**
  * Abstract implementation of NaiveBayesClassifierStore for Redis
