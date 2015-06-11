@@ -30,7 +30,7 @@ namespace SimpleBayesClassifier\Classifier;
  * IN THE SOFTWARE.
  */
 
-class NaiveBayesClassifierException extends Exception {
+class NaiveBayesClassifierException extends \Exception {
 
 	function __construct($code = NULL, $else = NULL) {
 		switch($code) {
