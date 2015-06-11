@@ -30,7 +30,6 @@ namespace SimpleBayesClassifier\Classifier;
  * IN THE SOFTWARE.
  */
 
-require_once 'NaiveBayesClassifierException.php';
 
 class NaiveBayesClassifier {
 
@@ -52,8 +51,7 @@ class NaiveBayesClassifier {
 
 		switch($conf['store']['mode']) {
 			case 'redis':
-				require_once 'NaiveBayesClassifierStoreRedis.php';
-				$this->store = new NaiveBayesClassifierStoreRedis($conf['store']['db']);
+        $this->store = new Store\NaiveBayesClassifierStoreRedis($conf['store']['db']);
 				break;
 		}
 	}
@@ -88,6 +86,8 @@ class NaiveBayesClassifier {
 		$wordCountFromSet = $this->store->getWordCountFromSet($keywords, $sets);
 
 		foreach($sets as $set) {
+			if(empty($set)) continue;
+			$P['sets'][$set] = 0; 
 			foreach($keywords as $word) {
 				$key = "{$word}{$this->store->delimiter}{$set}";
 				if($wordCountFromSet[$key] > 0)
@@ -123,7 +123,7 @@ class NaiveBayesClassifier {
 			$ret = array();
 			foreach($kw as $k) {
 				$k = strtolower($k);
-				$k = preg_replace("/[^a-z]/i", "", $k);
+				//$k = preg_replace("/[^a-z]/i", "", $k);
 
 				if(!empty($k) && strlen($k) > 2) {
 					$k = strtolower($k);
