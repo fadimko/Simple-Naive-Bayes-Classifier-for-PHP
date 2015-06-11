@@ -123,7 +123,7 @@ class NaiveBayesClassifier {
 			$ret = array();
 			foreach($kw as $k) {
 				$k = strtolower($k);
-				//$k = preg_replace("/[^a-z]/i", "", $k);
+				$k = preg_replace("/[^\p{L}\s]+/i", "", $k);
 
 				if(!empty($k) && strlen($k) > 2) {
 					$k = strtolower($k);
