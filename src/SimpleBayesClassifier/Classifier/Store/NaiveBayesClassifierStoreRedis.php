@@ -30,8 +30,6 @@ namespace SimpleBayesClassifier\Classifier\Store;
  * IN THE SOFTWARE.
  */
 
-require_once 'NaiveBayesClassifierStore.php';
-
 class NaiveBayesClassifierStoreRedis extends NaiveBayesClassifierStore {
 
 	private $conn;
