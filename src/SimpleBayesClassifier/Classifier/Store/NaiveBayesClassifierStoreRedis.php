@@ -1,7 +1,7 @@
 <?php
 
 namespace SimpleBayesClassifier\Classifier\Store;
-use namespace \SimpleBayesClassifier\Classifier;
+use \SimpleBayesClassifier\Classifier;
 /**
  * Abstract implementation of NaiveBayesClassifierStore for Redis
  *
