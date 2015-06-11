@@ -1,6 +1,6 @@
 <?php
 
-namespace \Bango29\SimpleBayesClassifier\Classifier;
+namespace SimpleBayesClassifier\Classifier;
 
 /**
  * Custom Exceptions with Custom Codes & Messages
