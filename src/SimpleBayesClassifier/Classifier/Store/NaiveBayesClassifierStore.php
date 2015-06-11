@@ -1,6 +1,6 @@
 <?php
 
-namespace \Bango29\SimpleBayesClassifier\Classifier;
+namespace SimpleBayesClassifier\Classifier\Store;
 
 /**
  * Abstraction layer for Store
