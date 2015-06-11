@@ -1,6 +1,6 @@
 <?php
 
-namespace \SimpleBayesClassifier\Classifier;
+namespace SimpleBayesClassifier\Classifier;
 
 /**
  * Main Class
