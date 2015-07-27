@@ -64,6 +64,7 @@ class NaiveBayesClassifier {
 	}
 
 	public function deTrain($words, $set) {
+        $words = trim($words);
 		$words = $this->cleanKeywords(explode(" ", $words));
 		foreach($words as $w) {
 			$this->store->deTrainFromSet(html_entity_decode($w), $set);
@@ -75,6 +76,7 @@ class NaiveBayesClassifier {
 		$score = array();
 
 		// Break keywords
+        $words = trim($words);
 		$keywords = $this->cleanKeywords(explode(" ", $words));
 
 		// All sets
@@ -123,7 +125,8 @@ class NaiveBayesClassifier {
 			$ret = array();
 			foreach($kw as $k) {
 				$k = strtolower($k);
-				$k = preg_replace("/[^\p{L}\s]+/i", "", $k);
+//				$k = preg_replace("/[^\p{L}\s]+/i", "", $k);
+                $k = preg_replace("/^\w/i", "", $k);
 
 				if(!empty($k) && strlen($k) > 2) {
 					$k = strtolower($k);
