@@ -1,7 +1,10 @@
 <?php
 
 namespace SimpleBayesClassifier\Classifier\Store;
-use \SimpleBayesClassifier\Classifier;
+use SimpleBayesClassifier\Classifier;
+use SimpleBayesClassifier\Classifier\NaiveBayesClassifierException;
+use Redis;
+
 /**
  * Abstract implementation of NaiveBayesClassifierStore for Redis
  *
@@ -136,7 +139,8 @@ class NaiveBayesClassifierStoreRedis extends NaiveBayesClassifierStore {
 	}
 
 	public function getAllWordsCount() {
-		return $this->conn->hGet($this->wordCount, $this->wordCount);
+//		return $this->conn->hGet($this->wordCount, $this->wordCount); // тут скорей всего ошибка, правильно ниже
+        return $this->conn->hGet($this->words, $this->wordCount);
 	}
 
 	public function getSetWordCount($sets) {
