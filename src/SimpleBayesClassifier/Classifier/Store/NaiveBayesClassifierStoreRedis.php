@@ -34,7 +34,7 @@ use Redis;
  */
 
 class NaiveBayesClassifierStoreRedis extends NaiveBayesClassifierStore {
-
+	/** @var Redis $conn */
 	private $conn;
 
 	private $namespace	= 'nbc-ns';
@@ -78,17 +78,37 @@ class NaiveBayesClassifierStoreRedis extends NaiveBayesClassifierStore {
 		$this->conn->close();
 	}
 
+	/**
+	 * adds a word to blacklist
+	 *
+	 * @param string $word new blacklist word
+	 *
+	 * @return float new score of blacklisted word
+	 */
 	public function addToBlacklist($word) {
-		return $this->conn->incr("{$this->blacklist}#{$word}");
+		return $this->conn->hIncrBy($this->blacklist, $word, 1);
 	}
 
+	/**
+	 * removes a word from blacklist
+	 *
+	 * @param string $word blacklisted word to remove
+	 *
+	 * @return int
+	 */
 	public function removeFromBlacklist($word) {
-		return $this->conn->set("{$this->blacklist}#{$word}", 0);
+		return $this->conn->hDel($this->blacklist, $word);
 	}
 
+	/**
+	 * is the word already blacklisted
+	 *
+	 * @param string $word word to check
+	 *
+	 * @return bool
+	 */
 	public function isBlacklisted($word) {
-		$res = $this->conn->get("{$this->blacklist}#{$word}");
-		return !empty($res) && $res > 0 ? TRUE : FALSE;
+		return $this->conn->hExists($this->blacklist, $word);
 	}
 
 	public function trainTo($word, $set) {
@@ -118,6 +138,40 @@ class NaiveBayesClassifierStoreRedis extends NaiveBayesClassifierStore {
 			// Sets
 			$this->conn->hIncrBy($this->words, $key, -1);
 			$this->conn->hIncrBy($this->sets, $set, -1);
+
+			return TRUE;
+		}
+		else {
+			return FALSE;
+		}
+	}
+
+	/**
+	 * Detrain all words from needed set
+	 *
+	 * @param string $word list of words
+	 * @param string $set   needed set
+	 *
+	 * @return bool
+	 */
+	public function deTrainAllFromSet($word, $set) {
+		$key = "{$word}{$this->delimiter}{$set}";
+
+		$check = $this->conn->hExists($this->words, $word) &&
+				$this->conn->hExists($this->words, $this->wordCount) &&
+				$this->conn->hExists($this->words, $key) &&
+				$this->conn->hExists($this->sets, $set);
+
+		if($check) {
+			$count = $this->conn->hget($this->words, $key);
+
+			// Words
+			$this->conn->hIncrBy($this->words, $word, -$count);
+			$this->conn->hIncrBy($this->words, $this->wordCount, -$count);
+
+			// Sets
+			$this->conn->hIncrBy($this->words, $key, -$count);
+			$this->conn->hIncrBy($this->sets, $set, -$count);
 
 			return TRUE;
 		}
