@@ -1,9 +1,10 @@
 <?php
 
 namespace SimpleBayesClassifier\Classifier\Store;
+
+use Predis\ClientInterface;
 use SimpleBayesClassifier\Classifier;
 use SimpleBayesClassifier\Classifier\NaiveBayesClassifierException;
-use Redis;
 
 /**
  * Abstract implementation of NaiveBayesClassifierStore for Redis
@@ -34,7 +35,7 @@ use Redis;
  */
 
 class NaiveBayesClassifierStoreRedis extends NaiveBayesClassifierStore {
-	/** @var Redis $conn */
+	/** @var ClientInterface $conn */
 	private $conn;
 
 	private $namespace	= 'nbc-ns';
@@ -49,10 +50,7 @@ class NaiveBayesClassifierStoreRedis extends NaiveBayesClassifierStore {
 		if(empty($conf))
 			throw new NaiveBayesClassifierException(3001);
 		if(empty($conf['db_conn'])) {
-			if(empty($conf['db_host']))
-				throw new NaiveBayesClassifierException(3101);
-			if(empty($conf['db_port']))
-				throw new NaiveBayesClassifierException(3102);
+            throw new NaiveBayesClassifierException(3100);
 		}
 		if(!empty($conf['namespace']))
 			$this->namespace = $conf['namespace'];
@@ -64,14 +62,7 @@ class NaiveBayesClassifierStoreRedis extends NaiveBayesClassifierStore {
 		$this->cache		= "{$this->namespace}-{$this->cache}";
 
 		// Redis connection
-		if(empty($conf['db_conn'])) {
-			// Redis connection	
-			$this->conn = new Redis();
-			$this->conn->connect($conf['db_host'], $conf['db_port']);
-			$this->conn->select(77);
-		} else {
-			$this->conn = $conf['db_conn'];
-		}
+        $this->conn = $conf['db_conn'];
 	}
 
 	public function close() {
@@ -189,7 +180,7 @@ class NaiveBayesClassifierStoreRedis extends NaiveBayesClassifierStore {
 	}
 
 	public function getWordCount($words) {
-		return $this->conn->hMGet($this->words, $words);
+        return array_combine($words, $this->conn->hMGet($this->words, $words));
 	}
 
 	public function getAllWordsCount() {
@@ -198,7 +189,7 @@ class NaiveBayesClassifierStoreRedis extends NaiveBayesClassifierStore {
 	}
 
 	public function getSetWordCount($sets) {
-		return $this->conn->hMGet($this->sets, $sets);
+        return array_combine($sets, $this->conn->hMGet($this->sets, $sets));
 	}
 
 	public function getWordCountFromSet($words, $sets) {
@@ -208,7 +199,7 @@ class NaiveBayesClassifierStoreRedis extends NaiveBayesClassifierStore {
 				$keys[] = "{$word}{$this->delimiter}{$set}";
 			}
 		}
-		return $this->conn->hMGet($this->words, $keys);
+		return array_combine($keys, $this->conn->hMGet($this->words, $keys));
 	}
 
 }

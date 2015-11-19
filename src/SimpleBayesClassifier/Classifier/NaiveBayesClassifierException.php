@@ -51,6 +51,9 @@ class NaiveBayesClassifierException extends \Exception {
 				parent::__construct('Empty configuration array for NBCStore', $code);
 				break;
 
+            case 3100:
+                parent::__construct('NaiveBayesClassifierStore needs a storage provided in the constructor', $code);
+                break;
 			case 3101:
 				parent::__construct('NaiveBayesClassifierStoreMySQL needs a database host defined in the constructor', $code);
 				break;
